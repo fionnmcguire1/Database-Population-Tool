@@ -16,7 +16,8 @@ TODO LIST
  - Convert all parameters to lowercase
  - Distinguish the parameters as variable types
  - Check the data in the file match the datatype specified
- - Create text file with series of insert statements 
+ - Create text file with series of insert statements
+ - Figure out the best way to link files to fields
 """
 
 
@@ -44,45 +45,34 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000):
     CreateTable = CreateTable.split(',')
     print(CreateTable)
 
-    postgres_datatypes = ['CHAR', 'VARCHAR', 'INT', 'SERIAL', 'PRIMARY KEY', 'CHARACTER', 'TEXT', 'BIT', 'VAR BIT', 'SMALLINT', 'INTEGER', 'BIGINT'
-                 'SMALLSERIAL', 'BIGSERIAL', 'MONEY', 'BOOL', 'BOOLEAN', 'DATE', 'TIMESTAMP', 'TIME','PRIMARY KEY', 'REFERENCES']
-    
-    
+    postgres_datatypes = [ 'PRIMARY KEY', 'CHAR', 'VARCHAR', 'INT', 'SERIAL', 'CHARACTER', 'TEXT', 'BIT', 'VAR BIT', 'SMALLINT', 'INTEGER', 'BIGINT'
+                 'SMALLSERIAL', 'BIGSERIAL', 'MONEY', 'BOOL', 'BOOLEAN', 'DATE', 'TIMESTAMP', 'TIME', 'REFERENCES']
 
+    database_chosen = []
+    datatypes = []
+    fieldnames = []
+    if Language == 'postgres':
+        database_chosen = postgres_datatypes
+        
+    i = 0
+    while i < len(CreateTable):
+        j = 0
+        while j < len(database_chosen):
+            if database_chosen[j] in CreateTable[i]:
+                if j == 0:
+                    pass
+                else:
+                    datatypes.append(database_chosen[j])
+                    fieldnames +=  ((CreateTable[i].split('\''))[1].split('\''))
+                #print(database_chosen[j])
+                j = len(database_chosen)
+            j +=1
+        i+=1
+    print(datatypes)
+    print(fieldnames)
+    
 
 
 fmdbp(CreateTable)
 
-"""
-select * from student;
-
-select * from authentication;
-
-CREATE TABLE "authentication" (
-  "id" SERIAL PRIMARY KEY,
-  "username" TEXT NOT NULL,
-  "password" TEXT NOT NULL
-);
-
-INSERT INTO authentication ( username, password) values ('richLyncher', 'mysecret5');
-
-
-CREATE TABLE "student" (
-  "studentid" SERIAL PRIMARY KEY,
-  "firstname" VARCHAR(20) NOT NULL,
-  "surname" VARCHAR(40) NOT NULL,
-  "dob" DATE NOT NULL,
-  "addressline1" VARCHAR(50) NOT NULL,
-  "addressline2" VARCHAR(50) NOT NULL,
-  "addressline3" VARCHAR(50) NOT NULL,
-  "gender" BOOLEAN NOT NULL,
-  "phonenumber" INTEGER,
-  "email" TEXT NOT NULL,
-  "authentication" INTEGER NOT NULL
-);
-
-
-INSERT INTO student (firstname, surname, dob, addressline1, addressline2, addressline3, gender, phonenumber, email, authentication)
-VALUES ('Kevin', 'O Connell', '1994-05-04', '742 evergreen terrace', 'Springfield', 'Arizona', true, 0864472981, 'example@gmail.com', 1);
-"""
     
