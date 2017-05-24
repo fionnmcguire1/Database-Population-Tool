@@ -28,7 +28,7 @@ language: postgres, oracle, mysql
 """
 CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username' TEXT NOT NULL,'password' TEXT NOT NULL);"
 
-def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000):
+def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
 
     #Extract table name from create table query
     start = "CREATE TABLE"
@@ -70,9 +70,12 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000):
         i+=1
     print(datatypes)
     print(fieldnames)
-    
+    i = 0
+    while i < len(args):
+        print "Dynamically receiving arguments :", args[i]
+        i = i+1
 
 
-fmdbp(CreateTable)
+fmdbp(CreateTable,'postgres',1000,'a','b','c','d','e')
 
     
