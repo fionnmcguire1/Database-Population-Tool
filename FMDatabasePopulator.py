@@ -70,12 +70,29 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
         i+=1
     print(datatypes)
     print(fieldnames)
+
+    if len(fieldnames) != len(args):
+        return
+        
     i = 0
     while i < len(args):
-        print "Dynamically receiving arguments :", args[i]
+        try:
+            open(args[i], 'r')
+        except OSError:
+            print()
         i = i+1
 
 
-fmdbp(CreateTable,'postgres',1000,'a','b','c','d','e')
+fmdbp(CreateTable,'postgres',1000,'/Users/FionnMcguire/Downloads/SampleFirstNames.xlsx','/Users/FionnMcguire/Downloads/SampleFirstNames.xlsx')
+
+# '0-100' this is how you define a range
+# 'random35' random character generation of strings length 35 characters
+
+"""
+Generate username files and password files
+Generate them with a python script
+Test datatypes in the files
+Program the randomiser and number range as well as the boolean values
+"""
 
     
