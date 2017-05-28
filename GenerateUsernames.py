@@ -10,7 +10,7 @@ new_username = ''
 max
 with open('../SampleFiles/SampleFirstNames.txt', 'r') as firstnames:
     with open('../SampleFiles/SampleSurNames.txt', 'r') as lastnames:
-        with open('../SampleFiles/SampleUsernames.csv', 'w') as usernames:
+        with open('../SampleFiles/SampleUsernames.txt', 'w') as usernames:
             first = firstnames.readlines()
             last = lastnames.readlines()
             #print(first[46])

@@ -75,22 +75,34 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
         return
         
     i = 0
+    j = 0
+    checker = True
     while i < len(args):
         try:
-            open(args[i], 'r')
+            file1 = open(args[i], 'r')
+            if datatypes[i] == postgres_datatypes[3] or datatypes[i] == postgres_datatypes[4] or \
+            datatypes[i] == postgres_datatypes[7] or datatypes[i] == postgres_datatypes[8] or \
+            datatypes[i] == postgres_datatypes[9] or datatypes[i] == postgres_datatypes[10] or \
+            datatypes[i] == postgres_datatypes[11]:
+                
+                j = 0
+                while j < len(file1):
+                    if file1[j].isnumeric() == False:
+                        checker = False
+                    j +=1
+                if checker == False:
+                    print("Incorrect Data type in file "+arg[i])
         except OSError:
             print()
         i = i+1
 
 
-fmdbp(CreateTable,'postgres',1000,'/Users/FionnMcguire/Downloads/SampleFirstNames.xlsx','/Users/FionnMcguire/Downloads/SampleFirstNames.xlsx')
+fmdbp(CreateTable,'postgres',1000,'../SampleFiles/SampleFirstNames.txt','../SampleFiles/SampleSurNames.txt')
 
 # '0-100' this is how you define a range
 # 'random35' random character generation of strings length 35 characters
 
 """
-Generate username files and password files
-Generate them with a python script
 Test datatypes in the files
 Program the randomiser and number range as well as the boolean values
 """
