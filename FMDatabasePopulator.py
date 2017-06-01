@@ -7,7 +7,7 @@ Author: Fionn Mcguire
 Date: 21/05/2017
 
 """
-
+import random
 
 CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username' TEXT NOT NULL,'password' TEXT NOT NULL);"
 
@@ -60,6 +60,7 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
     i = 0
     j = 0
     checker = True
+    Randomiser = 0
     while i < len(args):
         try:
             file1 = open(args[i], 'r')
@@ -109,13 +110,84 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
             inserts.write(insertStatement+");\n")
             j=j+1
 
-fmdbp(CreateTable,'postgres',1000,'../SampleFiles/SampleUsernames.txt','../SampleFiles/SamplePasswords.txt')
+#fmdbp(CreateTable,'postgres',1000,'../SampleFiles/SampleUsernames.txt','../SampleFiles/SamplePasswords.txt')
 
-# '0-100' this is how you define a range
-# 'random35' random character generation of strings length 35 characters
 
-"""
-Program the randomiser and number range as well as the boolean values
-"""
+def DataGenerator(SpecifiedRange):
+    if 'RANDOMRANGE' in SpecifiedRange:
+        SpecifiedRange = SpecifiedRange.replace('RANDOMRANGE','')
+        SpecifiedRange = SpecifiedRange.replace(' ','')
+        SpecifiedRange = SpecifiedRange.split('-')
+        print(random.randint(int(SpecifiedRange[0]), int(SpecifiedRange[1])))
+
+    elif 'RANGESEQ' in SpecifiedRange:
+        SpecifiedRange = SpecifiedRange.replace('RANGESEQ','')
+        SpecifiedRange = SpecifiedRange.replace(' ','')
+        SpecifiedRange = SpecifiedRange.split('-')
+        if len(SpecifiedRange) == 2:
+            print(SpecifiedRange[0])
+            position = int(SpecifiedRange[0]) + 1
+            return ('RANGESEQ '+SpecifiedRange[0]+'-'+SpecifiedRange[1]+'-'+str(position))
+        if len(SpecifiedRange) == 3:
+            if int(SpecifiedRange[2]) < int(SpecifiedRange[1]) and int(SpecifiedRange[2]) > int(SpecifiedRange[0]):
+                print(SpecifiedRange[2])
+                position = int(SpecifiedRange[2]) + 1
+                return ('RANGESEQ '+SpecifiedRange[0]+'-'+SpecifiedRange[1]+'-'+str(position))
+            elif int(SpecifiedRange[2]) > int(SpecifiedRange[1]):
+                print(SpecifiedRange[0])
+                position = int(SpecifiedRange[0])
+                return ('RANGESEQ '+SpecifiedRange[0]+'-'+SpecifiedRange[1]+'-'+str(position))
+                
+                
+    elif 'RANDOMCHAR' in SpecifiedRange:
+        SpecifiedRange = SpecifiedRange.replace('RANDOMCHAR','')
+        SpecifiedRange = SpecifiedRange.replace(' ','')
+        iterator = int(SpecifiedRange)
+        i = 0
+        returnedString = ''
+        while i < iterator:            
+            returnedString += random.choice('abcdefghijklmnopqrstuvwxyz')
+            i+=1
+        print returnedString
+
+    elif 'RANDOMBOOL' in SpecifiedRange:
+        boolReturned = random.uniform(0, 1)
+        if boolReturned > 0.5:
+            print('TRUE')
+        else:
+            print('FALSE')
+    elif 'RANDOMFLOATRANGE' in SpecifiedRange:
+        SpecifiedRange = SpecifiedRange.replace('RANDOMFLOATRANGE','')
+        SpecifiedRange = SpecifiedRange.replace(' ','')
+        SpecifiedRange = SpecifiedRange.split('-')
+        print(random.uniform(float(SpecifiedRange[0]), float(SpecifiedRange[1])))
+    
+    #random.randint(1, 10)     //Random integer between 1 and 10
+    #random.uniform(1, 10)     //Random float between 1 and 10
+    #random.choice('abcdefghij')     //Random element within list
+
+DataGenerator('RANDOMRANGE 3-100')
+DataGenerator('RANDOMCHAR 9')
+
+i = 0
+ie = 10
+parameter = ''
+while i < ie:
+    if parameter == '':
+        parameter = DataGenerator('RANGESEQ 3-100')
+    else:
+        parameter = DataGenerator(parameter)
+    DataGenerator('RANDOMBOOL')
+    DataGenerator('RANDOMFLOATRANGE 3-100')
+    i +=1
+
+
+
+
+
+# 'RANDOMRANGE 0-100' or 'RANGESEQ 0-100' this is how you define a range
+# 'RANDOMCHAR 35' random character generation of strings length 35 characters
+# RANDOMBOOL
+
 
     
