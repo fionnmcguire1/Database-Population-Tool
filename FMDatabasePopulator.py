@@ -60,28 +60,30 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
     i = 0
     j = 0
     checker = True
-    Randomiser = 0
     while i < len(args):
         try:
-            file1 = open(args[i], 'r')
-            if datatypes[i] == postgres_datatypes[3] or datatypes[i] == postgres_datatypes[4] or \
-            datatypes[i] == postgres_datatypes[7] or datatypes[i] == postgres_datatypes[8] or \
-            datatypes[i] == postgres_datatypes[9] or datatypes[i] == postgres_datatypes[10] or \
-            datatypes[i] == postgres_datatypes[11]:
-                
-                j = 0
-                while j < len(file1):
-                    if ''.join(file1[j]).isnumeric() == False:
-                        checker = False
-                    j +=1
+            if 'RANDOMRANGE' in args[i] or  'RANDOMFLOATRANGE' in args[i] or  'RANDOMSEQ' in args[i] or 'RANDOMBOOL' in args[i] or  'RANDOMCHAR' in args[i] :
+                pass
             else:
-                j = 0
-                while j < len(file1.readlines()):
-                    if ''.join(file1.readlines(j)).isdigit() == True:
-                        checker = False
-                    j +=1
-            if checker == False:
-                print("Incorrect Data type in file "+arg[i])
+                file1 = open(args[i], 'r')
+                if datatypes[i] == postgres_datatypes[3] or datatypes[i] == postgres_datatypes[4] or \
+                datatypes[i] == postgres_datatypes[7] or datatypes[i] == postgres_datatypes[8] or \
+                datatypes[i] == postgres_datatypes[9] or datatypes[i] == postgres_datatypes[10] or \
+                datatypes[i] == postgres_datatypes[11]:
+                
+                    j = 0
+                    while j < len(file1):
+                        if ''.join(file1[j]).isnumeric() == False:
+                            checker = False
+                        j +=1
+                else:
+                    j = 0
+                    while j < len(file1.readlines()):
+                        if ''.join(file1.readlines(j)).isdigit() == True:
+                            checker = False
+                        j +=1
+                if checker == False:
+                    print("Incorrect Data type in file "+arg[i])
             
 
         except OSError:
@@ -101,16 +103,21 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
             insertStatement += ") VALUES ("
             l = 0
             while l < len(fieldnames):
-                file1 = open(args[l], 'r')
-                a = file1.readlines()
-                insertStatement += "'"+a[j].replace('\n','')+"', "
+                if 'RANDOMRANGE' in args[l] or  'RANDOMFLOATRANGE' in args[l] or  'RANDOMSEQ' in args[l] or 'RANDOMBOOL' in args[l] or  'RANDOMCHAR' in args[l] :
+                    a = DataGenerator(args[l])
+                    print(a)
+                    insertStatement += str(a)+"', "                  
+                else:
+                    file1 = open(args[l], 'r')
+                    a = file1.readlines()
+                    insertStatement += "'"+a[j].replace('\n','')+"', "
                 l = l+1
-            insertStatement = insertStatement[:-2]
-            
+            insertStatement = insertStatement[:-2]            
             inserts.write(insertStatement+");\n")
             j=j+1
 
-#fmdbp(CreateTable,'postgres',1000,'../SampleFiles/SampleUsernames.txt','../SampleFiles/SamplePasswords.txt')
+#fmdbp(CreateTable,'postgres',1,'../SampleFiles/SampleUsernames.txt','../SampleFiles/SamplePasswords.txt')
+
 
 
 def DataGenerator(SpecifiedRange):
@@ -118,7 +125,8 @@ def DataGenerator(SpecifiedRange):
         SpecifiedRange = SpecifiedRange.replace('RANDOMRANGE','')
         SpecifiedRange = SpecifiedRange.replace(' ','')
         SpecifiedRange = SpecifiedRange.split('-')
-        print(random.randint(int(SpecifiedRange[0]), int(SpecifiedRange[1])))
+        #print(random.randint(int(SpecifiedRange[0]), int(SpecifiedRange[1])))
+        return random.randint(int(SpecifiedRange[0]), int(SpecifiedRange[1]))
 
     elif 'RANGESEQ' in SpecifiedRange:
         SpecifiedRange = SpecifiedRange.replace('RANGESEQ','')
@@ -148,24 +156,28 @@ def DataGenerator(SpecifiedRange):
         while i < iterator:            
             returnedString += random.choice('abcdefghijklmnopqrstuvwxyz')
             i+=1
-        print returnedString
+        return returnedString
 
     elif 'RANDOMBOOL' in SpecifiedRange:
         boolReturned = random.uniform(0, 1)
         if boolReturned > 0.5:
-            print('TRUE')
+            return 'TRUE'
         else:
-            print('FALSE')
+            return 'FALSE'
     elif 'RANDOMFLOATRANGE' in SpecifiedRange:
         SpecifiedRange = SpecifiedRange.replace('RANDOMFLOATRANGE','')
         SpecifiedRange = SpecifiedRange.replace(' ','')
         SpecifiedRange = SpecifiedRange.split('-')
-        print(random.uniform(float(SpecifiedRange[0]), float(SpecifiedRange[1])))
+        return random.uniform(float(SpecifiedRange[0]), float(SpecifiedRange[1]))
+    else:
+        print("Not a valid parameter specified")
     
     #random.randint(1, 10)     //Random integer between 1 and 10
     #random.uniform(1, 10)     //Random float between 1 and 10
     #random.choice('abcdefghij')     //Random element within list
 
+#TESTING the DATAGENERATOR function
+'''
 DataGenerator('RANDOMRANGE 3-100')
 DataGenerator('RANDOMCHAR 9')
 
@@ -181,13 +193,7 @@ while i < ie:
     DataGenerator('RANDOMFLOATRANGE 3-100')
     i +=1
 
+'''
 
+fmdbp(CreateTable,'postgres',10,'../SampleFiles/SampleUsernames.txt','RANDOMRANGE 3-100')
 
-
-
-# 'RANDOMRANGE 0-100' or 'RANGESEQ 0-100' this is how you define a range
-# 'RANDOMCHAR 35' random character generation of strings length 35 characters
-# RANDOMBOOL
-
-
-    
