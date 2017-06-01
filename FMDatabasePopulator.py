@@ -8,24 +8,7 @@ Date: 21/05/2017
 
 """
 
-"""
-TODO LIST
- - Take files as variables
- - Allow users to specify seperators such as \n or ,
- - Allow users to specify table structure as parameters
- - Convert all parameters to lowercase
- - Distinguish the parameters as variable types
- - Check the data in the file match the datatype specified
- - Create text file with series of insert statements
- - Figure out the best way to link files to fields
-"""
 
-
-
-"""
-Parameter spec:
-language: postgres, oracle, mysql
-"""
 CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username' TEXT NOT NULL,'password' TEXT NOT NULL);"
 
 def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
@@ -87,23 +70,51 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
                 
                 j = 0
                 while j < len(file1):
-                    if file1[j].isnumeric() == False:
+                    if ''.join(file1[j]).isnumeric() == False:
                         checker = False
                     j +=1
-                if checker == False:
-                    print("Incorrect Data type in file "+arg[i])
+            else:
+                j = 0
+                while j < len(file1.readlines()):
+                    if ''.join(file1.readlines(j)).isdigit() == True:
+                        checker = False
+                    j +=1
+            if checker == False:
+                print("Incorrect Data type in file "+arg[i])
+            
+
         except OSError:
             print()
         i = i+1
+    tablename = tablename.replace('\'','')
+    tablename = tablename.replace(' ','')
+    with open('../SampleFiles/InsertStatementsOn'+tablename+'.txt', 'w') as inserts:
+        j = 0
+        while j < NumRows:
+            insertStatement = "INSERT INTO "+tablename+" ("
+            l = 0
+            while l < len(fieldnames):
+                insertStatement += fieldnames[l]+", "
+                l = l+1
+            insertStatement = insertStatement[:-2]
+            insertStatement += ") VALUES ("
+            l = 0
+            while l < len(fieldnames):
+                file1 = open(args[l], 'r')
+                a = file1.readlines()
+                insertStatement += "'"+a[j].replace('\n','')+"', "
+                l = l+1
+            insertStatement = insertStatement[:-2]
+            
+            inserts.write(insertStatement+");\n")
+            j=j+1
 
-
-fmdbp(CreateTable,'postgres',1000,'../SampleFiles/SampleFirstNames.txt','../SampleFiles/SampleSurNames.txt')
+fmdbp(CreateTable,'postgres',1000,'../SampleFiles/SampleUsernames.txt','../SampleFiles/SamplePasswords.txt')
 
 # '0-100' this is how you define a range
 # 'random35' random character generation of strings length 35 characters
 
 """
-Test datatypes in the files
 Program the randomiser and number range as well as the boolean values
 """
 
