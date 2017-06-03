@@ -10,7 +10,7 @@ Date: 21/05/2017
 import random
 
 CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username' TEXT NOT NULL,'password' TEXT NOT NULL);"
-
+rangeseqPosition = []
 def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
 
     #Extract table name from create table query
@@ -47,7 +47,6 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
                 else:
                     datatypes.append(database_chosen[j])
                     fieldnames +=  ((CreateTable[i].split('\''))[1].split('\''))
-                #print(database_chosen[j])
                 j = len(database_chosen)
             j +=1
         i+=1
@@ -62,8 +61,8 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
     checker = True
     while i < len(args):
         try:
-            if 'RANDOMRANGE' in args[i] or  'RANDOMFLOATRANGE' in args[i] or  'RANDOMSEQ' in args[i] or 'RANDOMBOOL' in args[i] or  'RANDOMCHAR' in args[i] :
-                pass
+            if 'RANDOMRANGE' in args[i] or  'RANDOMFLOATRANGE' in args[i] or  'RANGESEQ' in args[i] or 'RANDOMBOOL' in args[i] or  'RANDOMCHAR' in args[i] :
+                rangeseqPosition.append([''])
             else:
                 file1 = open(args[i], 'r')
                 if datatypes[i] == postgres_datatypes[3] or datatypes[i] == postgres_datatypes[4] or \
@@ -94,6 +93,7 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
     with open('../SampleFiles/InsertStatementsOn'+tablename+'.txt', 'w') as inserts:
         j = 0
         while j < NumRows:
+            m = 0
             insertStatement = "INSERT INTO "+tablename+" ("
             l = 0
             while l < len(fieldnames):
@@ -103,10 +103,28 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
             insertStatement += ") VALUES ("
             l = 0
             while l < len(fieldnames):
-                if 'RANDOMRANGE' in args[l] or  'RANDOMFLOATRANGE' in args[l] or  'RANDOMSEQ' in args[l] or 'RANDOMBOOL' in args[l] or  'RANDOMCHAR' in args[l] :
-                    a = DataGenerator(args[l])
-                    print(a)
-                    insertStatement += str(a)+"', "                  
+                if 'RANDOMRANGE' in args[l] or  'RANDOMFLOATRANGE' in args[l] or  'RANGESEQ' in args[l] or 'RANDOMBOOL' in args[l] or  'RANDOMCHAR' in args[l] :
+                    if 'RANGESEQ' in args[l]:
+                        #!!!!!!!!!!!!!!!!!!!I Messed with the next 10 lines and it doesn't work properly
+                        if j == 0:
+                            a = DataGenerator(args[l])
+                            rangeseqPosition[m] = a
+                            '''a = a.replace('RANGESEQ','')
+                            b = a.split('-')
+                            a = b[-1]
+                            insertStatement += str(a)+", "'''
+                            #print(a)
+                        else:
+                            a = DataGenerator(rangeseqPosition[m])
+                            rangeseqPosition[m] = a
+                            m = m+1
+                        a = a.replace('RANGESEQ','')
+                        b = a.split('-')
+                        a = b[-1]
+                        #print(b[-1])
+                    else:
+                        a = DataGenerator(args[l])
+                    insertStatement += str(a)+", "                  
                 else:
                     file1 = open(args[l], 'r')
                     a = file1.readlines()
@@ -115,7 +133,6 @@ def fmdbp(CreateTable, Language = 'postgres', NumRows = 1000, *args):
             insertStatement = insertStatement[:-2]            
             inserts.write(insertStatement+");\n")
             j=j+1
-
 #fmdbp(CreateTable,'postgres',1,'../SampleFiles/SampleUsernames.txt','../SampleFiles/SamplePasswords.txt')
 
 
@@ -133,16 +150,16 @@ def DataGenerator(SpecifiedRange):
         SpecifiedRange = SpecifiedRange.replace(' ','')
         SpecifiedRange = SpecifiedRange.split('-')
         if len(SpecifiedRange) == 2:
-            print(SpecifiedRange[0])
+            #print(SpecifiedRange[0])
             position = int(SpecifiedRange[0]) + 1
             return ('RANGESEQ '+SpecifiedRange[0]+'-'+SpecifiedRange[1]+'-'+str(position))
         if len(SpecifiedRange) == 3:
             if int(SpecifiedRange[2]) < int(SpecifiedRange[1]) and int(SpecifiedRange[2]) > int(SpecifiedRange[0]):
-                print(SpecifiedRange[2])
+                #print(SpecifiedRange[2])
                 position = int(SpecifiedRange[2]) + 1
                 return ('RANGESEQ '+SpecifiedRange[0]+'-'+SpecifiedRange[1]+'-'+str(position))
             elif int(SpecifiedRange[2]) > int(SpecifiedRange[1]):
-                print(SpecifiedRange[0])
+                #print(SpecifiedRange[0])
                 position = int(SpecifiedRange[0])
                 return ('RANGESEQ '+SpecifiedRange[0]+'-'+SpecifiedRange[1]+'-'+str(position))
                 
@@ -195,5 +212,5 @@ while i < ie:
 
 '''
 
-fmdbp(CreateTable,'postgres',10,'../SampleFiles/SampleUsernames.txt','RANDOMRANGE 3-100')
+fmdbp(CreateTable,'postgres',10,'../SampleFiles/SampleUsernames.txt','RANGESEQ 3-100')
 
