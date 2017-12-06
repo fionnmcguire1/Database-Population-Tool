@@ -46,19 +46,47 @@ class FMDBPT:
             return False
         output = ""
         import random
-        def randomRange(rows,start,end):
+        def randomRange(rows,start=0,end=10):
+            if start > end:
+                end = start+10
             rangeList = []
             for i in rows:
                 rangeList.append(random.randrange(start, end))
             return rangeList
             
-        def randomSeq():
+        def randomSeq(start=0,end=10):
+            if start > end:
+                end = start+10
+            return seqList = [x for x in range(start,end)]
 
-        def randomChar():
+        def randomChar(rows,specifiedString = None):
+            if specifiedString = None or type(specifiedString) != str:
+                specifiedString = 'abcdefghijklmnopqrstuvwxyz' 
+            charList = []
+            for i in rows:
+                charList.append(random.choice[letter for letter in specifiedString])
+            return charList
 
-        def randomBool():
+        def randomBool(rows,pattern=None):
+            boolList = []
+            if pattern == None:
+                for i in rows:
+                    boolList.append(random.choice['True','False'])
+            else:
+                for i in rows:
+                    if pattern[i%len(pattern)] == 'T':
+                        boolList.append('True')
+                    else:
+                        boolList.append('False')
+            return boolList
 
-        def randomFloat():
+        def randomFloat(rows,start=0.0,end=10.0):
+            floatList = []
+            if start > end:
+                end = start+10.0
+            for i in rows:
+                rangeList.append(random.uniform(start,end))
+            return rangeList
 
 
         #random range
