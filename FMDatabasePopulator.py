@@ -41,8 +41,22 @@ class FMDBPT:
         self.method = method
         self.location = None
 
-    #def FMwriteData(self,numLines,fieldModes):
-        
+    def FMwriteData(self,numLines,fieldModes):
+        if len(fieldModes) != len(fieldNames):
+            return False
+        output = ""
+        #random range
+        ##need start and end point
+        #random char
+        ## should accept a string to return a random char of that string
+        #random seq
+        ## need to give a starting point and optional ending point
+        #random bool
+        ##Need to accept a string of TTF in order to potentially generate the bools in order
+        #random float
+        ##Accept range
+        for line in range(numLines):
+
         
 
 ### Edge Cases ###
