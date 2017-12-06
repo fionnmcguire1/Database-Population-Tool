@@ -45,6 +45,22 @@ class FMDBPT:
         if len(fieldModes) != len(fieldNames):
             return False
         output = ""
+        import random
+        def randomRange(rows,start,end):
+            rangeList = []
+            for i in rows:
+                rangeList.append(random.randrange(start, end))
+            return rangeList
+            
+        def randomSeq():
+
+        def randomChar():
+
+        def randomBool():
+
+        def randomFloat():
+
+
         #random range
         ##need start and end point
         #random char
