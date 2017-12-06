@@ -14,7 +14,7 @@ class FMDBPT:
     def configurePT(self,tableStructure,lang):
         self.tableName = (tableStructure.split('\'')[1].split('\'')[0])
         self.tableStructure = (tableStructure.split('(')[1].split(');')[0]).split(',') 
-        self.lang = lower(lang)
+        self.lang = lang.lower()
         self.fieldNames = []
         self.configured = True
         postgres_datatypes = [ 'PRIMARY KEY', 'CHAR', 'VARCHAR', 'INT', 'SERIAL', 'CHARACTER', 'TEXT', 'BIT', 'VAR BIT', 'SMALLINT', 'INTEGER', 'BIGINT'
@@ -27,7 +27,7 @@ class FMDBPT:
             datatypeProvided = datatypeProvided.split(' ')
             length = len(datatypeProvided)
             checker = False
-            self.fieldNames+=datatypesProvided[0]
+            self.fieldNames+=datatypeProvided[0]
             for i in range(1,length):
                 if datatypeProvided[i] in self.databaseSelected: 
                     checker = True
@@ -42,7 +42,8 @@ class FMDBPT:
         self.location = None
 
     def FMwriteData(self,numLines,fieldModes):
-        if len(fieldModes) != len(fieldNames):
+        if len(fieldModes) != len(self.fieldNames):
+            print("Wassup")
             return False
         output = ""
         import random
@@ -57,14 +58,15 @@ class FMDBPT:
         def randomSeq(start=0,end=10):
             if start > end:
                 end = start+10
-            return seqList = [x for x in range(start,end)]
+            seqList = [x for x in range(start,end)]
+            return seqList
 
         def randomChar(rows,specifiedString = None):
-            if specifiedString = None or type(specifiedString) != str:
+            if specifiedString == None or type(specifiedString) != str:
                 specifiedString = 'abcdefghijklmnopqrstuvwxyz' 
             charList = []
             for i in rows:
-                charList.append(random.choice[letter for letter in specifiedString])
+                charList.append(random.choice([letter for letter in specifiedString]))
             return charList
 
         def randomBool(rows,pattern=None):
@@ -87,22 +89,13 @@ class FMDBPT:
             for i in rows:
                 rangeList.append(random.uniform(start,end))
             return rangeList
-
-
-        #random range
-        ##need start and end point
-        #random char
-        ## should accept a string to return a random char of that string
-        #random seq
-        ## need to give a starting point and optional ending point
-        #random bool
-        ##Need to accept a string of TTF in order to potentially generate the bools in order
-        #random float
-        ##Accept range
-        for line in range(numLines):
-
         
-
+        for mode in fieldModes:
+            if mode == 'rr':
+                print('Hello')
+                print(randomRange(numLines,50,55))
+            else:
+                print("Hello")
 ### Edge Cases ###
 # lang to lower case
 # check location
@@ -116,3 +109,4 @@ CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username'
 newTool = FMDBPT()
 newTool.configurePT(CreateTable,'postgres')
 newTool.configWritingMethod('p')
+newTool.FMwriteData(50,['rr','rr'])
