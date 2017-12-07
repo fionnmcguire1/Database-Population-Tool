@@ -20,27 +20,21 @@ class FMDBPT:
                 'SMALLSERIAL', 'BIGSERIAL', 'MONEY', 'BOOL', 'BOOLEAN', 'DATE', 'TIMESTAMP', 'TIME', 'REFERENCES']    
         if self.lang == 'postgres':
             self.databaseSelected = postgres_datatypes
-        print(self.tableStructure)
-
+        
         for datatypeProvided in self.tableStructure:
-            datatypeProvided = datatypeProvided.split(' ')
-            length = len(datatypeProvided)
-            checker = False
-            AlreadyDeleted = False
-            self.fieldNames.append(datatypeProvided[0])
-            for i in range(1,length):
-                if datatypeProvided[i].upper() in self.databaseSelected: 
-                    checker = True
-                if datatypeProvided[i].upper() in self.databaseSelected[0] or datatypeProvided[i].upper() == self.databaseSelected[-1]:
-                    if AlreadyDeleted == False:
-                        del self.fieldNames[-1]
-                        AlreadyDeleted = True
-                        print(self.tableStructure)
-                        self.tableStructure.remove(" ".join(datatypeProvided))
-                        print(self.tableStructure)
-            if checker == False:
-                print('Datatype:'+datatypeProvided[i]+' Not Recognised')
-                self.configured = False
+            if self.databaseSelected[0] not in datatypeProvided and self.databaseSelected[-1] not in datatypeProvided:
+
+                datatypeProvided = datatypeProvided.split(' ')
+                length = len(datatypeProvided)
+                checker = False
+                AlreadyDeleted = False
+                self.fieldNames.append(datatypeProvided[0])
+                for i in range(1,length):
+                    if datatypeProvided[i].upper() in self.databaseSelected: 
+                        checker = True
+                if checker == False:
+                    print('Datatype:'+datatypeProvided[i]+' Not Recognised')
+                    self.configured = False
                 
 
     def configWritingMethod(self,method,location=None):
@@ -49,7 +43,6 @@ class FMDBPT:
 
     def FMwriteData(self,numLines,fieldModes):
         if len(fieldModes) != len(self.fieldNames):
-            print(fieldModes)
             print("Wassup")
             print(self.fieldNames)
             return False
@@ -125,7 +118,7 @@ class FMDBPT:
             output+= "INSERT INTO '"+self.tableName+"'("
             
             output+=(", ".join(self.fieldNames))
-            output+=field+") VALUES("
+            output+=") VALUES("
             #Need to cycle through the len of arrays if you're less than
 
             for column in range(lengthOfDG):
