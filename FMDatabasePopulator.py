@@ -27,11 +27,17 @@ class FMDBPT:
             datatypeProvided = datatypeProvided.split(' ')
             length = len(datatypeProvided)
             checker = False
+            AlreadyDeleted = False
             self.fieldNames.append(datatypeProvided[0])
             for i in range(1,length):
-                if datatypeProvided[i] in self.databaseSelected: 
+                if datatypeProvided[i].upper() in self.databaseSelected: 
                     checker = True
-                    break
+                if datatypeProvided[i].upper() in self.databaseSelected[0] or datatypeProvided[i].upper() == self.databaseSelected[-1]:
+                    if AlreadyDeleted == False:
+                        del self.fieldNames[-1]
+                        AlreadyDeleted = True
+                        #print(" ".join(datatypeProvided))
+                        self.tableStructure.remove(" ".join(datatypeProvided))
             if checker == False:
                 print('Datatype:'+datatypeProvided[i]+' Not Recognised')
                 self.configured = False
@@ -43,7 +49,6 @@ class FMDBPT:
 
     def FMwriteData(self,numLines,fieldModes):
         if len(fieldModes) != len(self.fieldNames):
-            print("Wassup")
             return False
         output = ""
         import random
@@ -111,16 +116,15 @@ class FMDBPT:
                 dataGenerated.append(randomBool(numLines,mode[1]))
             elif mode[0] == 'rf':
                 dataGenerated.append(randomFloat(numLines,start,end))
-        print(dataGenerated)
+        #print(dataGenerated)
+        for insert in numLines:
+            output+= "INSERT INTO '"+self.tableName+"'("
 ### Edge Cases ###
-# lang to lower case
-# check location
-# Get datafrom online sources
 # Provide contingencies
 # fieldModes must be list as long as tableStructure
 # Must have items contained in the datatypes
 # UNLESS the data has been extracted from online
-
+# check location
 CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username' TEXT NOT NULL,'password' TEXT NOT NULL);"
 newTool = FMDBPT()
 newTool.configurePT(CreateTable,'postgres')
