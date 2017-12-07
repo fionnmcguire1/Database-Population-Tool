@@ -7,7 +7,6 @@ The parameters specify the database language as well as the structure of that ta
 uses a series of other text files to populate the various fields in the tables.
 
 """
-#import random
 
 class FMDBPT:
     
@@ -21,7 +20,7 @@ class FMDBPT:
                 'SMALLSERIAL', 'BIGSERIAL', 'MONEY', 'BOOL', 'BOOLEAN', 'DATE', 'TIMESTAMP', 'TIME', 'REFERENCES']    
         if self.lang == 'postgres':
             self.databaseSelected = postgres_datatypes
-
+        print(self.tableStructure)
 
         for datatypeProvided in self.tableStructure:
             datatypeProvided = datatypeProvided.split(' ')
@@ -36,8 +35,9 @@ class FMDBPT:
                     if AlreadyDeleted == False:
                         del self.fieldNames[-1]
                         AlreadyDeleted = True
-                        #print(" ".join(datatypeProvided))
+                        print(self.tableStructure)
                         self.tableStructure.remove(" ".join(datatypeProvided))
+                        print(self.tableStructure)
             if checker == False:
                 print('Datatype:'+datatypeProvided[i]+' Not Recognised')
                 self.configured = False
@@ -49,6 +49,9 @@ class FMDBPT:
 
     def FMwriteData(self,numLines,fieldModes):
         if len(fieldModes) != len(self.fieldNames):
+            print(fieldModes)
+            print("Wassup")
+            print(self.fieldNames)
             return False
         output = ""
         import random
@@ -117,8 +120,20 @@ class FMDBPT:
             elif mode[0] == 'rf':
                 dataGenerated.append(randomFloat(numLines,start,end))
         #print(dataGenerated)
-        for insert in numLines:
+        lengthOfDG = len(dataGenerated)
+        for insert in range(numLines):
             output+= "INSERT INTO '"+self.tableName+"'("
+            
+            output+=(", ".join(self.fieldNames))
+            output+=field+") VALUES("
+            #Need to cycle through the len of arrays if you're less than
+
+            for column in range(lengthOfDG):
+                output+= str(dataGenerated[column][insert])+", "
+            output+=");"
+        print(output)
+        #print("Hello")
+            
 ### Edge Cases ###
 # Provide contingencies
 # fieldModes must be list as long as tableStructure
@@ -129,4 +144,4 @@ CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username'
 newTool = FMDBPT()
 newTool.configurePT(CreateTable,'postgres')
 newTool.configWritingMethod('p')
-newTool.FMwriteData(50,['rr 1 10','rc abcde','rb TTF'])
+newTool.FMwriteData(50,['rc abcde','rb TTF'])
