@@ -20,21 +20,21 @@ class FMDBPT:
                 'SMALLSERIAL', 'BIGSERIAL', 'MONEY', 'BOOL', 'BOOLEAN', 'DATE', 'TIMESTAMP', 'TIME', 'REFERENCES']    
         if self.lang == 'postgres':
             self.databaseSelected = postgres_datatypes
-        
+        checkValidDatatypeModes = {'rr':[3,4,9,10,11,12,13],'rs':[3,4,9,10,11,12,13],'rc':[1,2,5,6],'rstr':[2,6],'rb':[15,16],'rf':[]}        
         for datatypeProvided in self.tableStructure:
             if self.databaseSelected[0] not in datatypeProvided and self.databaseSelected[-1] not in datatypeProvided:
-
-                datatypeProvided = datatypeProvided.split(' ')
-                length = len(datatypeProvided)
-                checker = False
-                AlreadyDeleted = False
-                self.fieldNames.append(datatypeProvided[0])
-                for i in range(1,length):
-                    if datatypeProvided[i].upper() in self.databaseSelected: 
-                        checker = True
-                if checker == False:
-                    print('Datatype:'+datatypeProvided[i]+' Not Recognised')
-                    self.configured = False
+                if self.databaseSelected[4] not in datatypeProvided and self.databaseSelected[12] not in datatypeProvided and self.databaseSelected[13] not in datatypeProvided:
+                    datatypeProvided = datatypeProvided.split(' ')
+                    length = len(datatypeProvided)
+                    checker = False
+                    AlreadyDeleted = False
+                    self.fieldNames.append(datatypeProvided[0])
+                    for i in range(1,length):
+                        if datatypeProvided[i].upper() in self.databaseSelected: 
+                            checker = True
+                    if checker == False:
+                        print('Datatype:'+datatypeProvided[i]+' Not Recognised')
+                        self.configured = False
                 
 
     def configWritingMethod(self,method,location=None):
