@@ -77,10 +77,9 @@ class FMDBPT:
             stringList = []
             alphabet = 'abcdefghijklmnopqrstuvwxyz'
             for row in range(rows):
-                String = '\''
-                for letter in range(int(stringLength)):
+                String = ""
+                for letter in range(stringLength):
                     String+= random.choice(alphabet)
-                String+='\''
                 stringList.append(String)
             return stringList
     
@@ -121,8 +120,6 @@ class FMDBPT:
                 dataGenerated.append(randomSeq(start,end))
             elif mode[0] == 'rc':
                 dataGenerated.append(randomChar(numLines,mode[1]))
-            elif mode[0] == 'rstr':
-                dataGenerated.append(randomString(numLines,mode[1]))
             elif mode[0] == 'rb':
                 dataGenerated.append(randomBool(numLines,mode[1]))
             elif mode[0] == 'rf':
@@ -153,4 +150,4 @@ CreateTable = "CREATE TABLE 'authentication' ('id' SERIAL PRIMARY KEY,'username'
 newTool = FMDBPT()
 newTool.configurePT(CreateTable,'postgres')
 newTool.configWritingMethod('p')
-newTool.FMwriteData(50,['rstr 5','rb TTF'])
+newTool.FMwriteData(50,['rc abcde','rb TTF'])
