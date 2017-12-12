@@ -43,7 +43,6 @@ class FMDBPT:
 
     def FMwriteData(self,numLines,fieldModes):
         if len(fieldModes) != len(self.fieldNames):
-            print("Wassup")
             print(self.fieldNames)
             return False
         output = ""
@@ -69,20 +68,22 @@ class FMDBPT:
                 specifiedString = 'abcdefghijklmnopqrstuvwxyz' 
             charList = []
             for i in range(rows):
-                charList.append(random.choice([letter for letter in specifiedString]))
+                rChar = random.choice([letter for letter in specifiedString])
+                rChar = '\''+rChar+'\''
+                charList.append(rChar)
             return charList
 
         def randomBool(rows,pattern=None):
             boolList = []
             if pattern == None:
                 for i in range(rows):
-                    boolList.append(random.choice['True','False'])
+                    boolList.append(random.choice['TRUE','FALSE'])
             else:
                 for i in range(rows):
                     if pattern[i%len(pattern)] == 'T':
-                        boolList.append('True')
+                        boolList.append('TRUE')
                     else:
-                        boolList.append('False')
+                        boolList.append('FALSE')
             return boolList
 
         def randomFloat(rows,start=0.0,end=10.0):
@@ -115,14 +116,15 @@ class FMDBPT:
         #print(dataGenerated)
         lengthOfDG = len(dataGenerated)
         for insert in range(numLines):
-            output+= "INSERT INTO '"+self.tableName+"'("
+            output+= "INSERT INTO "+self.tableName+" ("
             
-            output+=(", ".join(self.fieldNames))
+            output+=(", ".join(self.fieldNames)).replace('\'','')
             output+=") VALUES("
             #Need to cycle through the len of arrays if you're less than
 
             for column in range(lengthOfDG):
                 output+= str(dataGenerated[column][insert])+", "
+            output = output[:-2]
             output+=");"
         print(output)
         #print("Hello")
