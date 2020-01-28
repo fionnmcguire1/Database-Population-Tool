@@ -1,2 +1,2 @@
 # Database-Population-Tool
-This repository contains a python file designed to dynamically populate the tables of a database with sample data used for testing.
+Python driven tool designed to dynamically populate the tables of a database with sample data used for testing postgres based projects. This tool configures insert statements based on the table structures to build enough variation to quickly test likely edge cases.
